@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  # app:
+  #   container_name: todo-app
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.dev
+  #   depends_on:
+  #     - migrations
+  #   ports:
+  #     - 4000:4000
+  #   volumes:
+  #     - .:/app
+
+  database:
+    container_name: todo-db
+    image: postgres
+    volumes:
+      - todo-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=todo_dev
+
+  migrations:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - database
+    entrypoint: [ "mix", "ecto.migrate" ]
+    volumes:
+      - .:/app
+
+volumes:
+  todo-data:

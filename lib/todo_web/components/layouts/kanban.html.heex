@@ -1,0 +1,14 @@
+<div class="grid grid-cols-12 h-screen">
+  <div class="col-span-2 bg-purple-600">
+    <.link href={~p"/boards"}>
+      <.button class="rounded-full">
+        <.icon name="hero-chevron-left" />
+      </.button>
+    </.link>
+
+    <%= @board.id %>
+  </div>
+  <div class="col-span-10 p-4 bg-slate-300">
+    <%= @inner_content %>
+  </div>
+</div>
