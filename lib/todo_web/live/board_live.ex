@@ -33,4 +33,19 @@ defmodule TodoWeb.BoardLive do
 
     {:noreply, new_socket}
   end
+
+  def handle_event("toggle_sidebar", _unsigned_params, socket) do
+    {:noreply, assign(socket, sidebar_open: !socket.assigns.sidebar_open)}
+  end
+
+  defp board_menu(assigns) do
+    ~H"""
+    <div class="row-s flex gap-3 py-1 px-3 items-center">
+      <.header>Board <%= @board.title %></.header>
+      <button class="p-1 hover:scale-110 transition-all">
+        <.icon name="hero-star" />
+      </button>
+    </div>
+    """
+  end
 end

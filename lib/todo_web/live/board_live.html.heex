@@ -1,7 +1,7 @@
-<div class="h-full overflow-x-scroll csb">
-  <.header>Board <%= @board.title %></.header>
+<div class="h-full flex flex-col gap-2">
+  <.board_menu board={@board} />
 
-  <ul class="flex gap-1 items-stretch">
+  <ul class="grow pb-2 flex gap-1 overflow-x-scroll csb">
     <li :for={list <- @lists}>
       <.live_component module={ListComponent} id={list.id} list={list} />
     </li>
@@ -27,7 +27,7 @@
         :if={@temporary_list}
         class={[
           "flex flex-col gap-2",
-          "w-60 p-2 card",
+          "w-60 p-2 card"
         ]}
         phx-submit="create_list"
         for={@new_list_form}

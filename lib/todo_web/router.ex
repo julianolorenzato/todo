@@ -20,15 +20,15 @@ defmodule TodoWeb.Router do
     get "/", BoardController, :to_index
     # get "/boards", BoardController, :index
     get "/boards/new", BoardController, :new
-    post "/boards", BoardController, :create
+    # post "/boards", BoardController, :create
 
-    live_session :kanban, layout: {TodoWeb.Layouts, :kanban} do
+    live_session :kanban, on_mount: TodoWeb.Kanban, layout: {TodoWeb.Layouts, :kanban} do
       live "/boards", BoardsLive
+      live "/boards/:id", BoardLive
     end
 
     live_session :task, layout: {TodoWeb.Layouts, :tasks_manager} do
       live "/task", TaskLive
-      live "/boards/:id", BoardLive
     end
   end
 

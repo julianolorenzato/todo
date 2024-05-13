@@ -1,14 +1,37 @@
-<div class="grid grid-cols-12 h-screen">
-  <div class="col-span-2 bg-purple-600">
-    <.link href={~p"/boards"}>
-      <.button class="rounded-full">
+<div class="h-screen w-full flex">
+  <div
+    :if={@sidebar}
+    class={[
+      if(@sidebar_open, do: "w-60", else: "w-10"),
+      "relative shrink-0 col-span-2 bg-purple-600 transition-all"
+    ]}
+  >
+    <button
+      phx-click="toggle_sidebar"
+      class="absolute -right-3 top-5 rounded-md text-white bg-neutral-900 border border-white hover:bg-neutral-700 p-1"
+    >
+      <%= if @sidebar_open do %>
         <.icon name="hero-chevron-left" />
-      </.button>
-    </.link>
+      <% else %>
+        <.icon name="hero-chevron-right" />
+      <% end %>
+    </button>
 
-    <%= @board.id %>
+    <div :if={@sidebar_open}>
+      <hr class="mt-20" />
+
+      <ul class="flex flex-col items-stretch text-white">
+        <.link class="" href={~p"/boards"}>
+          <li class="hover:bg-purple-500 py-1.5 px-4">
+            <span class="rounded-sm">Go back to boards</span>
+          </li>
+        </.link>
+      </ul>
+    </div>
   </div>
-  <div class="col-span-10 p-4 bg-slate-300">
+
+  <%!-- main content --%>
+  <div class="p-4 bg-slate-300 w-[calc(100%-240px)]">
     <%= @inner_content %>
   </div>
 </div>

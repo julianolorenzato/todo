@@ -5,7 +5,7 @@ defmodule TodoWeb.ListComponent do
 
   def render(assigns) do
     ~H"""
-    <div class="w-60 card p-2">
+    <div class="w-60 overflow-y-scroll max-h-full card p-2">
       <div class="flex justify-between mb-1">
         <h3><%= @list.title %></h3>
         <button class="hover:bg-red-800 hover:text-white rounded px-1">
