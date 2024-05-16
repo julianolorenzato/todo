@@ -15,7 +15,7 @@ services:
 
   database:
     container_name: todo-db
-    image: postgres
+    image: postgres:15
     volumes:
       - todo-data:/var/lib/postgresql/data
     ports:

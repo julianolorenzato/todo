@@ -4,7 +4,6 @@ defmodule TodoWeb.TaskLive do
 
   alias TodoWeb.LiveComponents.TaskCard
 
-
   def render(assigns) do
     ~H"""
     <div>

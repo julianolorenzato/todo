@@ -1,11 +1,8 @@
 <div class="h-screen w-full flex">
-  <div
-    :if={@sidebar}
-    class={[
-      if(@sidebar_open, do: "w-60", else: "w-10"),
-      "relative shrink-0 col-span-2 bg-purple-600 transition-all"
-    ]}
-  >
+  <div class={[
+    if(@sidebar_open, do: "w-60", else: "w-10"),
+    "relative shrink-0 col-span-2 bg-purple-600 transition-all"
+  ]}>
     <button
       phx-click="toggle_sidebar"
       class="absolute -right-3 top-5 rounded-md text-white bg-neutral-900 border border-white hover:bg-neutral-700 p-1"
@@ -31,7 +28,7 @@
   </div>
 
   <%!-- main content --%>
-  <div class="p-4 bg-slate-300 w-[calc(100%-240px)]">
+  <div class="p-4 grow bg-slate-300 w-[calc(100%-240px)]">
     <%= @inner_content %>
   </div>
 </div>

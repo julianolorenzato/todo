@@ -21,9 +21,9 @@ defmodule TodoWeb.Router do
     # get "/boards", BoardController, :index
     get "/boards/new", BoardController, :new
     # post "/boards", BoardController, :create
+    live "/boards", BoardsLive
 
     live_session :kanban, on_mount: TodoWeb.Kanban, layout: {TodoWeb.Layouts, :kanban} do
-      live "/boards", BoardsLive
       live "/boards/:id", BoardLive
     end
 

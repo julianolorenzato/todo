@@ -1,4 +1,5 @@
 defmodule TodoWeb.BoardsLive do
+  alias Todo.Tasks
   use TodoWeb, :live_view
 
   def render(assigns) do
@@ -41,6 +42,12 @@ defmodule TodoWeb.BoardsLive do
   end
 
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, sidebar: false)}
+    socket =
+      socket
+      |> assign(boards: Tasks.get_boards())
+      |> assign(sidebar: true)
+      # |> assign(sidebar_open: true)
+
+    {:ok, socket}
   end
 end

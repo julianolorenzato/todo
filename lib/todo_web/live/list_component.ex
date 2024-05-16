@@ -5,16 +5,22 @@ defmodule TodoWeb.ListComponent do
 
   def render(assigns) do
     ~H"""
-    <div class="w-60 overflow-y-scroll max-h-full card p-2">
-      <div class="flex justify-between mb-1">
-        <h3><%= @list.title %></h3>
-        <button class="hover:bg-red-800 hover:text-white rounded px-1">
-          <.icon name="hero-x-mark" />
-        </button>
-      </div>
-      <ul class="flex flex-col gap-2">
-        <.live_component :for={task <- @tasks} module={TaskComponent} id={task.id} task={task} />
+    <div class="h-full overflow-hidden">
+      <div class="w-60 max-h-full flex flex-col card p-2">
+        <%!-- Header --%>
+        <div class="flex justify-between mb-1">
+          <h3><%= @list.title %></h3>
+          <button class="hover:bg-red-800 hover:text-white rounded px-1">
+            <.icon name="hero-x-mark" />
+          </button>
+        </div>
 
+        <%!-- List data --%>
+        <ul class="flex flex-col gap-2 overflow-y-auto h-full fancy-scrollbar pr-2">
+          <.live_component :for={task <- @tasks} module={TaskComponent} id={task.id} task={task} />
+        </ul>
+
+        <%!-- New task --%>
         <div
           class={[
             "self-center p-1 rounded-full",
@@ -48,7 +54,7 @@ defmodule TodoWeb.ListComponent do
           <.input type="text" name="title" label="Task Title" field={@new_task_form[:title]} />
           <.button>Create</.button>
         </.form>
-      </ul>
+      </div>
     </div>
     """
   end
