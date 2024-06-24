@@ -581,10 +581,11 @@ defmodule TodoWeb.CoreComponents do
   """
   attr :name, :string, required: true
   attr :class, :string, default: nil
+  attr :id, :string, default: nil
 
   def icon(%{name: "hero-" <> _} = assigns) do
     ~H"""
-    <span class={[@name, @class]} />
+    <span id={@id} class={[@name, @class]} />
     """
   end
 

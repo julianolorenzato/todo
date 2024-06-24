@@ -1,22 +1,22 @@
-defmodule Todo.Tasks.Task do
+defmodule Todo.Boards.Card do
   use Ecto.Schema
-
-  alias Todo.Tasks.{List, Step}
 
   import Ecto.Changeset
 
-  schema "tasks" do
+  alias Todo.Boards.{Section, Step}
+
+  schema "cards" do
     field :title, :string
     field :description, :string
 
-    belongs_to :list, List
+    belongs_to :section, Section
     has_many :steps, Step
 
     timestamps()
   end
 
-  def changeset(task, attrs) do
-    task
+  def changeset(card, attrs) do
+    card
     |> cast(attrs, [:title, :description])
   end
 end

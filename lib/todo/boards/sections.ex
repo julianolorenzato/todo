@@ -1,21 +1,21 @@
-defmodule Todo.Tasks.List do
+defmodule Todo.Boards.Section do
   use Ecto.Schema
-
-  alias Todo.Tasks.{List, Board, Task}
 
   import Ecto.Changeset
 
-  schema "lists" do
+  alias Todo.Boards.{Section, Board, Card}
+
+  schema "sections" do
     field :title, :string
 
     belongs_to :board, Board
-    has_many :tasks, Task
+    has_many :cards, Card
 
     timestamps()
   end
 
-  def changeset(%List{} = list, attrs) do
-    list
+  def changeset(%Section{} = section, attrs) do
+    section
     |> cast(attrs, [:title])
     |> validate_length(:title, max: 20)
   end

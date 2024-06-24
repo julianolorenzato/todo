@@ -1,13 +1,14 @@
-defmodule Todo.Tasks.Board do
-  alias Todo.Tasks.List
+defmodule Todo.Boards.Board do
   use Ecto.Schema
-
+  
   import Ecto.Changeset
+
+  alias Todo.Boards.Section
 
   schema "boards" do
     field :title, :string
 
-    has_many :lists, List
+    has_many :sections, Section
 
     timestamps()
   end

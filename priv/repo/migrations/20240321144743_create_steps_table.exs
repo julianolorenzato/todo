@@ -6,7 +6,7 @@ defmodule Todo.Repo.Migrations.CreateStepsTable do
       add :goal, :string, null: false
       add :done, :boolean, null: false, default: false
 
-      add :task_id, references(:tasks, on_delete: :delete_all), null: false
+      add :card_id, references(:cards, on_delete: :delete_all), null: false
 
       timestamps()
     end

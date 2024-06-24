@@ -1,8 +1,8 @@
-defmodule Todo.Repo.Migrations.CreateListsTable do
+defmodule Todo.Repo.Migrations.CreateSectionsTable do
   use Ecto.Migration
 
   def change do
-    create table(:lists) do
+    create table(:sections) do
       add :title, :string, null: false
 
       add :board_id, references(:boards, on_delete: :delete_all), null: false

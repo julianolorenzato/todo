@@ -1,24 +1,31 @@
-<div class="h-screen w-full flex">
-  <div class={[
-    if(@sidebar_open, do: "w-60", else: "w-10"),
-    "relative shrink-0 col-span-2 bg-purple-600 transition-all"
-  ]}>
+<div class="h-full w-full flex bg-yellow">
+  <.flash_group flash={@flash} />
+  <%!-- Kanban Sidebar --%>
+  <div id="kanban_sidebar" class="w-60 relative shrink-0 col-span-2 bg-purple-600 transition-all">
+    <%!-- Sidebar toggle button --%>
     <button
-      phx-click="toggle_sidebar"
+      phx-click={toggle_kanban_sidebar()}
       class="absolute -right-3 top-5 rounded-md text-white bg-neutral-900 border border-white hover:bg-neutral-700 p-1"
     >
-      <%= if @sidebar_open do %>
-        <.icon name="hero-chevron-left" />
-      <% else %>
-        <.icon name="hero-chevron-right" />
-      <% end %>
+      <.icon id="kanban_sidebar_toggle_icon" name="hero-chevron-left" />
     </button>
 
-    <div :if={@sidebar_open}>
+    <%!-- Sidebar Items --%>
+    <div id="kanban_sidebar_items">
       <hr class="mt-20" />
 
       <ul class="flex flex-col items-stretch text-white">
-        <.link class="" href={~p"/boards"}>
+        <.link navigate={~p"/boards/#{@board.id}"}>
+          <li class="hover:bg-purple-500 py-1.5 px-4">
+            <span class="rounded-sm">Board</span>
+          </li>
+        </.link>
+        <.link navigate={~p"/boards/#{@board.id}/settings"}>
+          <li class="hover:bg-purple-500 py-1.5 px-4">
+            <span class="rounded-sm">Settings</span>
+          </li>
+        </.link>
+        <.link href={~p"/boards"}>
           <li class="hover:bg-purple-500 py-1.5 px-4">
             <span class="rounded-sm">Go back to boards</span>
           </li>
@@ -27,8 +34,18 @@
     </div>
   </div>
 
-  <%!-- main content --%>
+  <%!-- Kanban Content --%>
   <div class="p-4 grow bg-slate-300 w-[calc(100%-240px)]">
-    <%= @inner_content %>
+    <%!-- menu --%>
+    <div class="flex gap-3 pb-4 px-3 items-center h-[7%]">
+      <.header><%= @board.title %></.header>
+      <button class="p-1 hover:scale-110 transition-all">
+        <.icon name="hero-star" />
+      </button>
+    </div>
+    <%!-- main content --%>
+    <div class="h-[93%]">
+      <%= @inner_content %>
+    </div>
   </div>
 </div>

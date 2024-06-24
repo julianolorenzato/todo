@@ -1,7 +1,7 @@
-defmodule TodoWeb.TaskLive do
-  alias Todo.Tasks.Task
+defmodule TodoWeb.CardLive do
   use TodoWeb, :live_view
 
+  alias Todo.Boards.Card
   alias TodoWeb.LiveComponents.TaskCard
 
   def render(assigns) do
@@ -21,10 +21,10 @@ defmodule TodoWeb.TaskLive do
       </.modal>
 
       <div class="flex gap-2">
-        <.task_stack new_task_form={@new_task_form} tasks={[1, 2, 3, 4, 5]} />
-        <.task_stack new_task_form={@new_task_form} tasks={[6, 7, 8, 9, 10]} />
-        <.task_stack new_task_form={@new_task_form} tasks={[11, 22, 33, 44, 55]} />
-        <.task_stack new_task_form={@new_task_form} tasks={[12, 23, 34, 45, 56]} />
+        <.card_stack new_task_form={@new_task_form} tasks={[1, 2, 3, 4, 5]} />
+        <.card_stack new_task_form={@new_task_form} tasks={[6, 7, 8, 9, 10]} />
+        <.card_stack new_task_form={@new_task_form} tasks={[11, 22, 33, 44, 55]} />
+        <.card_stack new_task_form={@new_task_form} tasks={[12, 23, 34, 45, 56]} />
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 justify-items-center gap-4">
@@ -48,9 +48,9 @@ defmodule TodoWeb.TaskLive do
   end
 
   def mount(_params, _session, socket) do
-    new_task_form = Task.changeset(%Task{}, %{}) |> to_form()
+    new_card_form = Card.changeset(%Card{}, %{}) |> to_form()
 
-    {:ok, assign(socket, new_task_modal: false, new_task_form: new_task_form)}
+    {:ok, assign(socket, new_task_modal: false, new_task_form: new_card_form)}
   end
 
   def handle_event("open_new_task_modal", _unsigned_params, socket) do

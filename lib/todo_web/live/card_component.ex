@@ -1,6 +1,7 @@
-defmodule TodoWeb.TaskComponent do
-  alias Todo.Tasks
+defmodule TodoWeb.CardComponent do
   use TodoWeb, :live_component
+
+  alias Todo.Boards
 
   def render(%{steps: steps} = assigns) do
     done_steps_length = steps |> Enum.filter(& &1["done"]) |> length
@@ -21,7 +22,7 @@ defmodule TodoWeb.TaskComponent do
       "items-stretch rounded bg-neutral-300",
       "shadow-md cursor-pointer hover:bg-neutral-200"
     ]}>
-      <h3 class="px-0.5"><%= @task.title %></h3>
+      <h3 class="px-0.5"><%= @card.title %></h3>
 
       <%!-- <.modal id="aaa">
         <ul class={["flex flex-col gap-2"]}>
@@ -61,7 +62,7 @@ defmodule TodoWeb.TaskComponent do
         </ul>
       </.modal> --%>
 
-      <.task_progress percentage={@percentage} />
+      <.card_progress percentage={@percentage} />
       <%!-- </div> --%>
 
       <%!-- <.form for={@new_step_form} phx-target={@myself} phx-submit="add_step">
@@ -77,7 +78,7 @@ defmodule TodoWeb.TaskComponent do
     new_socket =
       socket
       # |> assign(new_step_form: new_step_form)
-      # |> assign(steps: Tasks.get_steps_from_task(socket.assigns.task.id))
+      # |> assign(steps: Tasks.get_steps_from_card(socket.assigns.card.id))
       |> assign(modal_show: false)
 
     {:ok, new_socket}
@@ -86,7 +87,7 @@ defmodule TodoWeb.TaskComponent do
   def update(assigns, socket) do
     new_socket =
       socket
-      |> assign(steps: Tasks.get_steps_from_task(assigns.task.id))
+      |> assign(steps: Boards.get_steps_from_card(assigns.card.id))
       |> assign(assigns)
 
     {:ok, new_socket}
@@ -116,4 +117,19 @@ defmodule TodoWeb.TaskComponent do
   # def handle_event("toggle_hidden", _unsigned_params, socket) do
   #   {:noreply, assign(socket, hidden: !socket.assigns.hidden)}
   # end
+
+  attr :percentage, :integer, required: true
+
+  def card_progress(assigns) do
+    ~H"""
+    <div class="relative h-2 w-full border border-purple-700 bg-white rounded-md overflow-hidden">
+      <div
+        style={"width: #{@percentage}%"}
+        class="bg-purple-600 i-shadow h-full flex items-center transition-all"
+      >
+        <%!-- <%= @percentage %>% --%>
+      </div>
+    </div>
+    """
+  end
 end

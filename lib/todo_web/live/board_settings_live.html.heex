@@ -1,0 +1,23 @@
+<div class="h-24">
+  <ul class="flex gap-2 card p-1">
+    <.link
+      patch={~p"/boards/#{@board.id}/settings/"}
+      class={[
+        if(@live_action == :info, do: "bg-gray-400", else: "bg-gray-300"),
+        "rounded shadow border border-gray-700 px-2 py-1 cursor-pointer hover:bg-gray-700 hover:text-white"
+      ]}
+    >
+      Descrição
+    </.link>
+    <.link
+      patch={~p"/boards/#{@board.id}/settings/members"}
+      class={[
+        if(@live_action == :members, do: "bg-gray-400", else: "bg-gray-300"),
+        "rounded shadow border border-gray-700 px-2 py-1 cursor-pointer hover:bg-gray-700 hover:text-white"
+      ]}
+    >
+      Membros
+    </.link>
+  </ul>
+  <.settings_view live_action={@live_action} />
+</div>

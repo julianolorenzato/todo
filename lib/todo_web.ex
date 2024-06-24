@@ -52,7 +52,8 @@ defmodule TodoWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {TodoWeb.Layouts, :app}
+        layout: {TodoWeb.Layouts, :app},
+        container: {:div, class: "h-full"} # it fix the layout problem
 
       unquote(html_helpers())
     end
@@ -88,7 +89,7 @@ defmodule TodoWeb do
       import TodoWeb.Gettext
 
       # Specific components
-      import TodoWeb.TaskComponents
+      import TodoWeb.KanbanComponents
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

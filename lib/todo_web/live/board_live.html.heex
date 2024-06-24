@@ -1,9 +1,7 @@
 <div class="h-full flex flex-col gap-2">
-  <.board_menu board={@board} />
-
   <ul class="grow pb-2 flex gap-1 overflow-x-scroll csb">
-    <li :for={list <- @lists}>
-      <.live_component module={ListComponent} id={list.id} list={list} />
+    <li :for={section <- @sections}>
+      <.live_component module={SectionComponent} id={section.id} section={section} />
     </li>
 
     <div class="flex flex-col gap-1">
@@ -16,7 +14,7 @@
         ]}
         phx-click="toggle_temporary"
       >
-        <%= if @temporary_list do %>
+        <%= if @temporary_section do %>
           <.icon class="text-slate-600" name="hero-x-mark" />
         <% else %>
           <.icon class="text-slate-600" name="hero-plus" />
@@ -24,15 +22,15 @@
       </div>
 
       <.form
-        :if={@temporary_list}
+        :if={@temporary_section}
         class={[
           "flex flex-col gap-2",
           "w-60 p-2 card"
         ]}
-        phx-submit="create_list"
-        for={@new_list_form}
+        phx-submit="create_section"
+        for={@new_section_form}
       >
-        <.input type="text" name="title" label="List Title" field={@new_list_form[:title]} />
+        <.input type="text" name="title" label="List Title" field={@new_section_form[:title]} />
         <.button>Create</.button>
       </.form>
     </div>
