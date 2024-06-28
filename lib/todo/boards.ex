@@ -1,6 +1,7 @@
 defmodule Todo.Boards do
-  alias Todo.Boards.{Board, Section, Card, Step}
   alias Todo.Repo
+  alias Todo.Boards.{Board, Section, Card, Step, Member, JoinLink}
+
   import Ecto.Query
 
   def get_sections_from_board(board_id) do
@@ -18,25 +19,53 @@ defmodule Todo.Boards do
     |> Repo.all()
   end
 
-  def get_boards() do
+  def get_boards_by_user_id(user_id) do
     Repo.all(
       from b in Board,
+        left_join: m in assoc(b, :members),
         left_join: s in assoc(b, :sections),
         left_join: c in assoc(s, :cards),
         select: {b, count(c.id, :distinct)},
         # select: map(b, [:title, tasks_count: count(t.id)]),
-        group_by: b.id
-      # where: b.id == ^board_id
+        group_by: b.id,
+        where: m.user_id == ^user_id
     )
+  end
+
+  def get_board_members(board_id) do
+    Repo.all(from m in Member, where: m.board_id == ^board_id, preload: :user)
+  end
+
+  def get_board_join_links(board_id) do
+    Repo.all(from jl in JoinLink, where: jl.board_id == ^board_id)
+  end
+
+  def create_join_link(params, user, board_id) do
+    # join_link =
+    #   %JoinLink{}
+    #   |> JoinLink.create_changeset(params)
+    #   |> IO.inspect(label: "ABB")
+
+    Repo.get!(Board, board_id)
+    |> Ecto.build_assoc(:join_links)
+    |> JoinLink.create_changeset(params)
+    # |> IO.inspect(label: "AAAAAAAA")
+    |> Repo.insert!()
   end
 
   def change_board(%Board{} = board, attrs \\ %{}) do
     Board.changeset(board, attrs)
   end
 
-  def create_board(attrs) do
+  def create_board(attrs, current_user) do
+    member =
+      %Member{}
+      |> Member.changeset(%{"role" => :owner})
+      |> Ecto.Changeset.put_assoc(:user, current_user)
+
     %Board{}
     |> Board.changeset(attrs)
+    |> Ecto.Changeset.put_assoc(:members, [member])
     |> Repo.insert!()
   end
 

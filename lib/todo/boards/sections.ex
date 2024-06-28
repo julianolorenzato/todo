@@ -17,6 +17,7 @@ defmodule Todo.Boards.Section do
   def changeset(%Section{} = section, attrs) do
     section
     |> cast(attrs, [:title])
+    |> validate_required(:title)
     |> validate_length(:title, max: 20)
   end
 end

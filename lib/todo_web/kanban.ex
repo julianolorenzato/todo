@@ -3,14 +3,20 @@ defmodule TodoWeb.Kanban do
   alias Todo.Boards
   alias Todo.Boards.Board
 
-  import Phoenix.Component
+  import Plug.Conn, only: [assign: 3]
+  import Phoenix.Component, only: [assign: 2]
 
   def on_mount(:default, %{"id" => board_id}, _session, socket) do
     socket =
       socket
-      |> assign(board: Repo.get_by(Board, id: String.to_integer(board_id)))
-      |> assign(sections: Boards.get_sections_from_board(String.to_integer(board_id)))
+      |> assign(app_header: true)
+      |> assign(board: Repo.get_by(Board, id: board_id))
+      |> assign(sections: Boards.get_sections_from_board(board_id))
 
     {:cont, socket}
+  end
+
+  def init_app_default_style(conn, _opts) do
+    assign(conn, :app_header, false)
   end
 end

@@ -1,4 +1,4 @@
-<div class="h-full w-full flex bg-yellow">
+<div class="h-full w-full flex">
   <.flash_group flash={@flash} />
   <%!-- Kanban Sidebar --%>
   <div id="kanban_sidebar" class="w-60 relative shrink-0 col-span-2 bg-purple-600 transition-all">
@@ -14,19 +14,24 @@
     <div id="kanban_sidebar_items">
       <hr class="mt-20" />
 
-      <ul class="flex flex-col items-stretch text-white">
+      <ul class="flex flex-col items-stretch text-white gap-1 p-3">
         <.link navigate={~p"/boards/#{@board.id}"}>
-          <li class="hover:bg-purple-500 py-1.5 px-4">
+          <li class="hover:bg-purple-500 py-1.5 px-2 flex gap-2 items-center rounded-md">
+            <.icon name="hero-rectangle-stack" />
             <span class="rounded-sm">Board</span>
           </li>
         </.link>
+
         <.link navigate={~p"/boards/#{@board.id}/settings"}>
-          <li class="hover:bg-purple-500 py-1.5 px-4">
+          <li class="hover:bg-purple-500 py-1.5 px-2 flex gap-2 items-center rounded-md">
+            <.icon name="hero-cog-6-tooth" />
             <span class="rounded-sm">Settings</span>
           </li>
         </.link>
+
         <.link href={~p"/boards"}>
-          <li class="hover:bg-purple-500 py-1.5 px-4">
+          <li class="hover:bg-purple-500 py-1.5 px-2 flex gap-2 items-center rounded-md">
+            <.icon name="hero-arrow-uturn-left" />
             <span class="rounded-sm">Go back to boards</span>
           </li>
         </.link>

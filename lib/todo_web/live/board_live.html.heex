@@ -12,25 +12,22 @@
           "card hover:bg-neutral-200",
           "transition-all cursor-pointer"
         ]}
-        phx-click="toggle_temporary"
+        phx-click={toggle_new_section()}
       >
-        <%= if @temporary_section do %>
-          <.icon class="text-slate-600" name="hero-x-mark" />
-        <% else %>
-          <.icon class="text-slate-600" name="hero-plus" />
-        <% end %>
+        <.icon id="toggle_new_section_icon" class="text-slate-600" name="hero-plus" />
       </div>
 
       <.form
-        :if={@temporary_section}
+        id="new_section_form"
         class={[
           "flex flex-col gap-2",
-          "w-60 p-2 card"
+          "w-60 p-2 card hidden"
         ]}
+        phx-change="form_change"
         phx-submit="create_section"
         for={@new_section_form}
       >
-        <.input type="text" name="title" label="List Title" field={@new_section_form[:title]} />
+        <.input type="text" label="List Title" field={@new_section_form[:title]} />
         <.button>Create</.button>
       </.form>
     </div>

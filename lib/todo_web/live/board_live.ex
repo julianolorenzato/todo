@@ -1,4 +1,5 @@
 defmodule TodoWeb.BoardLive do
+  alias Ecto.Changeset
   use TodoWeb, :live_view
 
   alias Todo.Boards
@@ -7,32 +8,44 @@ defmodule TodoWeb.BoardLive do
   def mount(_params, _session, socket) do
     new_socket =
       socket
-      |> assign(temporary_section: false)
       |> assign(new_section_form: to_form(%{}))
 
     {:ok, new_socket}
   end
 
-  # need remove and use JS commands
-  def handle_event("toggle_temporary", _unsigned_params, socket) do
-    {:noreply, assign(socket, temporary_section: !socket.assigns.temporary_section)}
-  end
+  def handle_event("create_section", %{"title" => _} = params, socket) do
+    case Boards.create_section(socket.assigns.board.id, params) do
+      {:ok, created_section} ->
+        new_socket =
+          socket
+          |> assign(sections: socket.assigns.sections ++ [created_section])
+          |> assign(new_section_form: to_form(%{}))
 
-  def handle_event("create_section", unsigned_params, socket) do
-    {:ok, created_section} = Boards.create_section(socket.assigns.board.id, unsigned_params)
+        {:noreply, new_socket}
 
-    new_socket =
-      socket
-      |> assign(sections: socket.assigns.sections ++ [created_section])
-      |> assign(temporary_section: false)
-
-    {:noreply, new_socket}
-  end
-
-  def handle_event("delete_section", %{"id" => id, "section_id" => section_id}, socket) do
-    case Boards.delete_section(section_id) do
-      {1, _} -> {:noreply, assign(socket, sections: Boards.get_sections_from_board(id))}
-      {0, _} -> {:noreply, socket}
+      {:error, changeset} ->
+        {:noreply, assign(socket, new_section_form: to_form(%{}, errors: changeset.errors))}
     end
+  end
+
+  def handle_event("delete_section", %{"section_id" => section_id}, socket) do
+    case Boards.delete_section(section_id) do
+      {1, _} ->
+        {:noreply,
+         assign(socket, sections: Boards.get_sections_from_board(socket.assigns.board.id))}
+
+      {0, _} ->
+        {:noreply, socket}
+    end
+  end
+
+  def handle_event("form_change", unsigned_params, socket) do
+    {:noreply, assign(socket, new_section_form: to_form(unsigned_params))}
+  end
+
+  defp toggle_new_section() do
+    %JS{}
+    |> JS.toggle_class("hidden", to: "#new_section_form")
+    |> JS.toggle_class("hero-x-mark hero-plus", to: "#toggle_new_section_icon")
   end
 end

@@ -2,6 +2,7 @@ defmodule TodoWeb.Router do
   use TodoWeb, :router
 
   import TodoWeb.UserAuth
+  import TodoWeb.Kanban
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -11,29 +12,11 @@ defmodule TodoWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
+    plug :init_app_default_style
   end
 
   pipeline :api do
     plug :accepts, ["json"]
-  end
-
-  # MOVER O QUE PRECISA DE AUTENTICAÇÃO PRO SCOPE CERTO, E O QUE TEM QUE SER REDIRECIONADO PRO SCOPE CERTO
-  scope "/", TodoWeb do
-    pipe_through :browser
-
-    get "/boards", BoardController, :index
-    get "/boards/new", BoardController, :new
-    post "/boards", BoardController, :create
-
-    live_session :kanban, on_mount: TodoWeb.Kanban, layout: {TodoWeb.Layouts, :kanban} do
-      live "/boards/:id", BoardLive
-      live "/boards/:id/settings", BoardSettingsLive, :info
-      live "/boards/:id/settings/members", BoardSettingsLive, :members
-    end
-
-    live_session :task, layout: {TodoWeb.Layouts, :tasks_manager} do
-      live "/task", CardLive
-    end
   end
 
   # Other scopes may use custom stacks.
@@ -41,24 +24,17 @@ defmodule TodoWeb.Router do
   #   pipe_through :api
   # end
 
-  # Enable LiveDashboard and Swoosh mailbox preview in development
-  if Application.compile_env(:todo, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
-    # it behind authentication and allow only admins to access it.
-    # If your application does not have an admins-only section yet,
-    # you can use Plug.BasicAuth to set up some basic authentication
-    # as long as you are also using SSL (which you should anyway).
-    import Phoenix.LiveDashboard.Router
+  scope "/", TodoWeb do
+    pipe_through [:browser]
 
-    scope "/dev" do
-      pipe_through :browser
+    delete "/users/log_out", UserSessionController, :delete
 
-      live_dashboard "/dashboard", metrics: TodoWeb.Telemetry
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
+    live_session :current_user,
+      on_mount: [{TodoWeb.UserAuth, :mount_current_user}] do
+      live "/users/confirm/:token", UserConfirmationLive, :edit
+      live "/users/confirm", UserConfirmationInstructionsLive, :new
     end
   end
-
-  ## Authentication routes
 
   scope "/", TodoWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
@@ -79,6 +55,17 @@ defmodule TodoWeb.Router do
   scope "/", TodoWeb do
     pipe_through [:browser, :require_authenticated_user]
 
+    get "/boards", BoardController, :index
+    get "/boards/new", BoardController, :new
+    post "/boards", BoardController, :create
+
+    live_session :kanban, on_mount: TodoWeb.Kanban, layout: {TodoWeb.Layouts, :kanban} do
+      live "/boards/:id", BoardLive
+      live "/boards/:id/settings", BoardSettingsLive, :info
+      live "/boards/:id/settings/members", BoardSettingsLive, :members
+      live "/boards/:id/settings/join_links", BoardSettingsLive, :join_links
+    end
+
     live_session :require_authenticated_user,
       on_mount: [{TodoWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
@@ -86,15 +73,20 @@ defmodule TodoWeb.Router do
     end
   end
 
-  scope "/", TodoWeb do
-    pipe_through [:browser]
+  # Enable LiveDashboard and Swoosh mailbox preview in development
+  if Application.compile_env(:todo, :dev_routes) do
+    # If you want to use the LiveDashboard in production, you should put
+    # it behind authentication and allow only admins to access it.
+    # If your application does not have an admins-only section yet,
+    # you can use Plug.BasicAuth to set up some basic authentication
+    # as long as you are also using SSL (which you should anyway).
+    import Phoenix.LiveDashboard.Router
 
-    delete "/users/log_out", UserSessionController, :delete
+    scope "/dev" do
+      pipe_through :browser
 
-    live_session :current_user,
-      on_mount: [{TodoWeb.UserAuth, :mount_current_user}] do
-      live "/users/confirm/:token", UserConfirmationLive, :edit
-      live "/users/confirm", UserConfirmationInstructionsLive, :new
+      live_dashboard "/dashboard", metrics: TodoWeb.Telemetry
+      forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
 end

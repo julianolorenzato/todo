@@ -7,7 +7,7 @@
         "rounded shadow border border-gray-700 px-2 py-1 cursor-pointer hover:bg-gray-700 hover:text-white"
       ]}
     >
-      Descrição
+      Info
     </.link>
     <.link
       patch={~p"/boards/#{@board.id}/settings/members"}
@@ -16,8 +16,18 @@
         "rounded shadow border border-gray-700 px-2 py-1 cursor-pointer hover:bg-gray-700 hover:text-white"
       ]}
     >
-      Membros
+      Members
+    </.link>
+    <.link
+      patch={~p"/boards/#{@board.id}/settings/join_links"}
+      class={[
+        if(@live_action == :join_links, do: "bg-gray-400", else: "bg-gray-300"),
+        "rounded shadow border border-gray-700 px-2 py-1 cursor-pointer hover:bg-gray-700 hover:text-white"
+      ]}
+    >
+      Join Links
     </.link>
   </ul>
-  <.settings_view live_action={@live_action} />
+
+  <.settings_view new_join_link_form={@new_join_link_form} join_links={@join_links} members={@members} type={@live_action}/>
 </div>
